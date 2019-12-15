@@ -12,35 +12,24 @@ app = Flask(__name__)
 db = Database()
 
 
-@app.route('/add_deck')
-def add_deck(db):
-    descricao = request.args.descricao
-    nome = request.args.nome
-    custo = request.args.custo
-    data_criacao = request.args.data_criacao
-    cartas = literal_eval(request.args.cartas)
-    decks = db.add_deck(descricao, nome, custo, data_criacao, cartas)
+@app.route('/add_deck', methods=["GET"])
+def add_deck():
+    codigo_deck = request.args.get('codigo_deck', 0)
+    descricao = request.args.get('descricao', None)
+    nome = request.args.get('nome', None)
+    custo = request.args.get('custo', None)
+    # data_criacao = request.args.get('data_criacao')
+    cartas = request.args.get('cartas', None)
+    decks = db.add_deck(descricao, nome, custo, cartas, codigo_deck)
     return decks
 
-@app.route('/listar_cartas')
-def list_cartas():
-    cartas = db.list_cartas()
-    return cartas
-
-    # return render_template('index.html', result=res, content_type='application/json')
-
-@app.route('/listar_decks')
-def list_decks():
-    decks = db.list_decks()
-    return decks
-
-@app.route('/remove_deck')
+@app.route('/remove_deck', methods=["POST"])
 def remove_deck():
     codigo_deck = int(request.args.codigo_deck)
     res = db.remove_deck(codigo_deck)
     return res
 
-@app.route('/update_deck')
+@app.route('/update_deck', methods=["POST"])
 def update_deck():
     codigo_deck = int(request.args.codigo_deck)
     descricao = request.args.descricao
@@ -49,9 +38,21 @@ def update_deck():
     res = db.update_deck(codigo_deck, nome, descricao,cartas)
     return res    
 
-@app.route('/find_carta')
+@app.route('/list_cartas', methods=["GET"])
+def list_cartas():
+    cartas = db.list_cartas()
+    return cartas
+
+    # return render_template('index.html', result=res, content_type='application/json')
+
+@app.route('/list_decks', methods=["GET"])
+def list_decks():
+    decks = db.list_decks()
+    return decks
+
+@app.route('/find_carta', methods=["GET"])
 def find_carta():
-    nome = request.args.nome
+    nome = request.args.get('nome')
     res = db.find_carta(nome)
     return res    
 
