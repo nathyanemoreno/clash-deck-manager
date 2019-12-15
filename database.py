@@ -28,7 +28,8 @@ class Database:
         for i in cartas:
             numero_carta = i["numero_carta"]
             index_carta = i["index_carta"]
-            self.cur.execute(f"UPDATE deck_cartas SET numero_carta={numero_carta} AND index_carta={index_carta} WHERE codigo_deck={codigo_deck}")
+            self.cur.execute(f"UPDATE deck_cartas SET numero_carta={numero_carta}, index_carta={index_carta}, WHERE codigo_deck={codigo_deck}")
+        self.cur.execute(f"UPDATE decks SET custo=(SELECT AVG(c.custo) FROM deck_cartas AS dc, cartas AS c WHERE dc.{numero_carta}=c.{numero_carta}) WHERE codigo_deck={codigo_deck}")
         result = self.cur.fetchall()
         return result
     def list_cartas(self):
