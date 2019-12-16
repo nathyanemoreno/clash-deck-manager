@@ -14,28 +14,29 @@ db = Database()
 
 @app.route('/add_deck', methods=["GET"])
 def add_deck():
-    codigo_deck = request.args.get('codigo_deck', 0)
+    # codigo_deck = request.args.get('codigo_deck', 0)
     descricao = request.args.get('descricao', None)
     nome = request.args.get('nome', None)
     custo = request.args.get('custo', None)
     # data_criacao = request.args.get('data_criacao')
-    cartas = request.args.get('cartas', None)
-    decks = db.add_deck(descricao, nome, custo, cartas, codigo_deck)
+    cartas = literal_eval(request.args.get('cartas', None))
+    decks = db.add_deck(nome,descricao, custo, cartas)
     return decks
 
-@app.route('/remove_deck', methods=["POST"])
+@app.route('/remove_deck', methods=["GET"])
 def remove_deck():
-    codigo_deck = int(request.args.codigo_deck)
+    codigo_deck = str(request.args.get('codigo_deck'))
     res = db.remove_deck(codigo_deck)
     return res
 
-@app.route('/update_deck', methods=["POST"])
+@app.route('/update_deck', methods=["GET"])
 def update_deck():
-    codigo_deck = int(request.args.codigo_deck)
-    descricao = request.args.descricao
-    nome = request.args.nome
-    cartas = literal_eval(request.args.cartas)
-    res = db.update_deck(codigo_deck, nome, descricao,cartas)
+    codigo_deck = request.args.get('codigo_deck')
+    descricao = request.args.get('descricao')
+    nome = request.args.get('nome')
+    custo = request.args.get('custo', None)
+    cartas = literal_eval(request.args.get('cartas', None))
+    res = db.update_deck(codigo_deck, nome, descricao, custo, cartas)
     return res    
 
 @app.route('/list_cartas', methods=["GET"])
