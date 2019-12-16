@@ -60,7 +60,7 @@ export default makeStyles(theme => ({
     justifyContent: 'space-between'
   },
   wFill: {
-    width: `calc(100% - 32px)`
+    width: `calc(80% - 40px)`
   },
   modal: {
     display: 'flex',
