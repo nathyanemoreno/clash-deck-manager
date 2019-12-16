@@ -100,13 +100,18 @@ class Database:
         self.cur.close()
         self.con.close()
         return jsonify(response)
-    def find_carta(self, nome):
-        self.cur.execute("SELECT * FROM cartas WHERE nome={nome}")
-        row_headers=[x[0] for x in self.cur.description] #this will extract row headers
+    def find_deck(self, criterio):
+        if criterio.isnumeric():
+            query = "SELECT * FROM `decks` WHERE codigo_deck = %s"
+        else:
+            query = "SELECT * FROM `decks` WHERE nome = %s"
+        self.cur.execute(query, (criterio,))
         res = self.cur.fetchall()
-        json_data={}
-        for result in res: 
-            json_data[result[0]] = {row_headers[1] : result[1], row_headers[2] : result[2]}
+        row_headers=[x[0] for x in self.cur.description] #this will extract row headers
+        self.con.commit()
+        json_data  = {}
+        for result in res:
+            json_data[result[0]] = {row_headers[0] : result[0], row_headers[1] : result[1], row_headers[2] : result[2], row_headers[3] : float(result[3]), row_headers[4] : result[4]}
         self.cur.close()
         self.con.close()
         return jsonify(json_data)

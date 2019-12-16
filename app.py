@@ -51,10 +51,10 @@ def list_decks():
     decks = db.list_decks()
     return decks
 
-@app.route('/find_carta', methods=["GET"])
-def find_carta():
-    nome = request.args.get('nome')
-    res = db.find_carta(nome)
+@app.route('/find_deck', methods=["GET"])
+def find_deck():
+    criterio = request.args.get('criterio')
+    res = db.find_deck(criterio)
     return res    
 
 

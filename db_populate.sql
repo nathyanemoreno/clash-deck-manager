@@ -91,3 +91,18 @@ INSERT INTO cartas(nome, custo, raridade) VALUES
 ('Princesa', 3, 'Lendária'),
 ('Mago Elétrico', 4, 'Lendária'),
 ('Zap', 2, 'Comum');
+
+
+INSERT INTO decks(nome, descricao, custo, data_criacao) VALUES
+('Deck 1', 'Teste A', 4.7, '2019-12-15'),
+('Deck 2', 'Teste b', 4.7, '2019-12-15'),
+('Deck 3', 'Teste c', 4.7, '2019-12-15');
+
+INSERT INTO deck_cartas (codigo_deck, numero_carta, index_carta) VALUES
+(1, 1, 0),
+(1, 2, 1),
+(1, 3, 2),
+(1, 4, 3),
+(2, 5, 4),
+(2, 6, 5),
+(3, 7, 0);
