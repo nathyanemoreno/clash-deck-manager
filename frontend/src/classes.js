@@ -21,7 +21,7 @@ export default makeStyles(theme => ({
     height: '100%',
   },
   carta: {
-    height: '65px'  
+    height: 110  
   },
   zone: {
     background: 'rgba(0, 0, 0, 0.4)',
@@ -29,7 +29,7 @@ export default makeStyles(theme => ({
   },
   largeZone: {
     background: 'rgba(0, 0, 0, 0.4)',
-    height: '135px',
+    height: '220px',
     cursor: 'pointer'
   },
   left: {

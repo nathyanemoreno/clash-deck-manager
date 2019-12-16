@@ -25,6 +25,7 @@ function App() {
   const [currentCard, setCurrentCard] = React.useState();
   const [isEditing, setIsEditing] = React.useState(false);
   const [queryText, setQueryText] = React.useState();
+  const [lastQueryText, setLastQueryText] = React.useState();
   const [decks, setDecks] = React.useState([]);
   const rootRef = React.useRef(null);
 
@@ -33,11 +34,19 @@ function App() {
     setQueryText(target.value);
   }
 
-  const startSearch = e => {
-    e.preventDefault();
-    api.get(`/find_deck?query=${queryText}`).then(res => {
-      setDecks(res.data);
-    })
+  const startSearch = () => {
+    // e.preventDefault();
+    const last = queryText;
+    if (queryText === '') {
+      api.get(`/list_decks`).then(res => {
+        setDecks(res.data.decks.map((e, i)  => ({...e, index: i, cartas: e.cartas.map(c => ({...c, img: require(`./media/cards/${makeImgName(c.carta_nome)}Card.png`)}))})));
+      })
+    } else {
+      api.get(`/find_deck?query=${queryText}`).then(res => {
+        setDecks(res.data.decks.map((e, i)  => ({...e, index: i, cartas: e.cartas.map(c => ({...c, img: require(`./media/cards/${makeImgName(c.carta_nome)}Card.png`)}))})));
+      })
+    }
+    setLastQueryText(last);
   }
   
   const handleSelect = i => e => {
@@ -60,19 +69,19 @@ function App() {
     })
     setCartas(old => {
       if (currentDeck.cartas[currentCard]) {
-        return [...old, currentDeck.cartas[currentCard]].map(e => e != card ? e : null)
+        return [...old, currentDeck.cartas[currentCard]].map(e => e !== card ? e : null)
       } else {
-        return old.map(e => e != card ? e : null)  
+        return old.map(e => e !== card ? e : null)  
       }
     });
   }
 
-  const deck = (deckData) => {
+  const createDeck = (deckData) => {
     return (
       <Grid item md={6}>
         <Card className={classes.card}>
           <CardHeader
-            title={<Typography variant="body1" className={classes.deckTitle}>{`${deckData.nome}#${deckData.codigo}`}</Typography>}
+            title={<Typography variant="body1" className={classes.deckTitle}>{`${deckData.nome}#${deckData.codigo_deck}`}</Typography>}
             // subheader={<Typography variant="subtitle2">September 14, 2016</Typography>}
             className={classes.cardHeader}
             action={
@@ -94,6 +103,7 @@ function App() {
                       className={classes.carta}
                       src={require(`./media/cards/${makeImgName(carta.carta_nome)}Card.png`)}
                       title={carta.carta_nome}
+                      alt={carta.carta_nome}
                     />
                 </Grid>
               ))}
@@ -122,7 +132,7 @@ function App() {
               }}>
                 <EditIcon />
               </IconButton>
-              <IconButton size='small' className={classes.icon} onClick={() => handleDelete(deckData.codigo)}>
+              <IconButton size='small' className={classes.icon} onClick={handleDelete(deckData.codigo_deck, deckData.index)}>
                 <DeleteIcon />
               </IconButton>
             </div>
@@ -135,48 +145,57 @@ function App() {
   function saveDeck(e) {
     e.preventDefault();
     setIsEditing(false);
-    const cartas = currentDeck.cartas.filter(v => v !== null);
-    const custo = Math.round(10 * cartas.map(carta => carta.custo).reduce((a, b) => a + b,0) / cartas.length) / 10;
+    const cartas = currentDeck.cartas.filter(v => v !== null).map((e, i) => ({...e, index: i}));
+    const custo = Math.round(10 * cartas.map(carta => carta.carta_custo).reduce((a, b) => a + b,0) / cartas.length) / 10;
     const data = new Date().toISOString().substring(0, 10);
-    api.post(`/add_deck?descricao=${currentDeck.descricao}&nome=${currentDeck.nome}&custo=${custo}&data_criacao=${data}&cartas=${JSON.stringify(cartas.map(v => ({nome: v.nome})))}`)
+    api.post(`/add_deck?descricao=${currentDeck.descricao}&nome=${currentDeck.nome}&custo=${custo}&data_criacao=${data}&cartas=${JSON.stringify(cartas.map(v => ({numero_carta: v.numero_carta, index_carta: v.index})))}`)
     .then(v => {
       alert('Deck salvo com Sucesso!')
     })
     .catch(error => {
+      console.error(error);
       alert('Não foi possível salvar o Deck!')
     })
   }
 
   function updateDeck(e) {
     e.preventDefault();
-    const cartas = currentDeck.cartas.filter(v => v !== null);
-    const custo = Math.round(10 * cartas.map(carta => carta.custo).reduce((a, b) => a + b,0) / cartas.length) / 10;
-    api.post(`/update_deck?codigo_deck=${currentDeck.codigo_deck}&descricao=${currentDeck.descricao}&nome=${currentDeck.nome}&custo=${custo}&cartas=${JSON.stringify(cartas.map(v => ({nome: v.nome})))}`)
+    const cartas = currentDeck.cartas.filter(v => v !== null).map((e, i) => ({...e, index: i}));
+    const custo = Math.round(10 * cartas.map(carta => carta.carta_custo).reduce((a, b) => a + b,0) / cartas.length) / 10;
+    api.post(`/update_deck?codigo_deck=${currentDeck.codigo_deck}&descricao=${currentDeck.descricao}&nome=${currentDeck.nome}&custo=${custo}&cartas=${JSON.stringify(cartas.map(v => ({...v, index_carta: v.index})))}`)
     .then(v => {
-      alert('Deck salvo com Sucesso!')
+      alert('Deck alterado com Sucesso!')
     })
     .catch(error => {
-      alert('Não foi possível salvar o Deck!')
+      console.error(error);
+      alert('Não foi possível alterar o Deck!')
     })
   }
 
-  const handleDelete = codigo => (e) => {
+  const handleDelete = (codigo, index) => (e) => {
     e.preventDefault();
     api.post(`/remove_deck?codigo_deck=${codigo}`)
     .then(v => {
-      alert('Deck deletado com Sucesso')
+      startSearch();
+      alert('Deck deletado com Sucesso');
     })
     .catch(error => {
-      alert('Não foi possível excluir o Deck!')
+      console.error(error);
+      alert('Não foi possível deletado o Deck')
     })
   }
 
   React.useEffect(() => {
     api.get('/list_cartas').then(res => {
       const data = res.data;
-      setCartas(Object.values(data).map(e => ({...e, img: require(`./media/cards/${makeImgName(e.nome)}Card.png`)})));
+      console.log(data);
+      setCartas(Object.values(data).map(e => ({...e, carta_custo: e.custo, img: require(`./media/cards/${makeImgName(e.nome)}Card.png`)})));
+    })
+    .catch(error => {
+      console.error(error);
+      alert('Não foi possível obter as cartas.')
     });
-  }, [])
+  }, []);
 
   return (
     <div className={classes.h100}>
@@ -193,9 +212,10 @@ function App() {
                     <Paper className={classes.largeZone} onClick={handleSelect(i)}>
                       {e && (
                         <img
-                          className={classes.h100}
+                          className={classes.w100}
                           src={e.img}
                           title={e.nome}
+                          alt={e.nome}
                         />
                       )}
                     </Paper>
@@ -226,7 +246,7 @@ function App() {
           </Paper>
           <Grid container spacing={2}>
             {decks.map(deck => (
-              deck(deck)
+              createDeck(deck)
             ))}
           </Grid>
         </Grid>
@@ -259,7 +279,7 @@ function App() {
                       onClick={handleCardSelect(e)}
                     />
                     <img src={Elixir} alt='Elixir' className={classes.elixirBadge} />
-                    <p className={classes.elixirCusto}>{e.custo}</p>
+                    <p className={classes.elixirCusto}>{e.carta_custo}</p>
                   </div>
                 </Grid>
               ) : null
