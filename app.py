@@ -11,11 +11,9 @@ db = Database()
 
 @app.route('/add_deck', methods=["GET"])
 def add_deck():
-    # codigo_deck = request.args.get('codigo_deck', 0)
     descricao = request.args.get('descricao', None)
     nome = request.args.get('nome', None)
     custo = request.args.get('custo', None)
-    # data_criacao = request.args.get('data_criacao')
     cartas = literal_eval(request.args.get('cartas', None))
     decks = db.add_deck(nome,descricao, custo, cartas)
     return decks
