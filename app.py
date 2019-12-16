@@ -6,9 +6,6 @@ from ast import literal_eval
 
 app = Flask(__name__)
 
-# CORS(app)
-
-
 db = Database()
 
 
