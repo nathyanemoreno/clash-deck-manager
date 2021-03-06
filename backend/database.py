@@ -14,80 +14,80 @@ class Database:
         db = "CLASHROYALE"
         self.con = mysql.connector.connect(host=host, user=user, password=password, db=db)
         self.cur = self.con.cursor()
-    def add_deck(self, nome, descricao, custo, cartas):
+    def add_deck(self, name, description, elixir_cost, cards):
         self.createConnection()
-        query_deck = "INSERT INTO decks(nome , descricao, custo,data_criacao) VALUES (%s, %s, %s, %s)"
-        data_criacao = datetime.today().strftime("%Y-%m-%d")
-        recordTuple = (nome, descricao, custo, data_criacao)
+        query_deck = "INSERT INTO decks(name , description, elixir_cost,created_at) VALUES (%s, %s, %s, %s)"
+        created_at = datetime.today().strftime("%Y-%m-%d")
+        recordTuple = (name, description, elixir_cost, created_at)
         self.cur.execute(query_deck, recordTuple)
-        codigo_deck = self.cur.lastrowid
-        query = "INSERT INTO deck_cartas(codigo_deck, numero_carta, index_carta) VALUES (%s, %s, %s)"
-        for carta in cartas:
-            self.cur.execute(query, (codigo_deck,carta["numero_carta"], 1+carta["index_carta"]))
+        deck_code = self.cur.lastrowid
+        query = "INSERT INTO deck_cards(deck_code, card_number, index_card) VALUES (%s, %s, %s)"
+        for card in cards:
+            self.cur.execute(query, (deck_code,card["card_number"], 1+card["index_card"]))
         self.con.commit()
         return "Record inserted successfully"
-    def remove_deck(self, codigo_deck):
+    def remove_deck(self, deck_code):
         self.createConnection()
-        query1 = "DELETE FROM `deck_cartas` WHERE codigo_deck=%s"
-        query2 = "DELETE FROM `decks` WHERE codigo_deck=%s"
-        self.cur.execute(query1, (codigo_deck,)) 
-        self.cur.execute(query2, (codigo_deck,))
+        query1 = "DELETE FROM `deck_cards` WHERE deck_code=%s"
+        query2 = "DELETE FROM `decks` WHERE deck_code=%s"
+        self.cur.execute(query1, (deck_code,)) 
+        self.cur.execute(query2, (deck_code,))
         self.con.commit()
         return "Record removed successfully"
-    def update_deck(self, codigo_deck, nome, descricao,custo,cartas):
+    def update_deck(self, deck_code, name, description,elixir_cost,cards):
         self.createConnection()
-        query1 = "UPDATE decks SET nome=%s, descricao=%s, custo=%s WHERE codigo_deck=%s" 
-        self.cur.execute(query1, (nome, descricao, custo, codigo_deck,))
-        for i in cartas:    
-            query2 = "INSERT INTO deck_cartas(codigo_deck, numero_carta, index_carta) VALUES (%s,%s,%s) \
-                      ON DUPLICATE KEY UPDATE numero_carta=%s"
-            self.cur.execute(query2, (codigo_deck, i["numero_carta"], 1+i["index_carta"], i["numero_carta"]))
+        query1 = "UPDATE decks SET name=%s, description=%s, elixir_cost=%s WHERE deck_code=%s" 
+        self.cur.execute(query1, (name, description, elixir_cost, deck_code,))
+        for i in cards:    
+            query2 = "INSERT INTO deck_cards(deck_code, card_number, index_card) VALUES (%s,%s,%s) \
+                      ON DUPLICATE KEY UPDATE card_number=%s"
+            self.cur.execute(query2, (deck_code, i["card_number"], 1+i["index_card"], i["card_number"]))
         self.con.commit()
         return "Updated successfully"
-    def list_cartas(self):
+    def list_cards(self):
         self.createConnection()
-        self.cur.execute("SELECT numero_carta,nome, custo, raridade FROM cartas")
+        self.cur.execute("SELECT card_number,name, elixir_cost, rarity FROM cards")
         res = self.cur.fetchall()
         self.con.commit()
         json_data = {}
         for result in res:
-            json_data[result[0]] = {"numero_carta" : result[0], "nome" : result[1], "custo" : result[2], "raridade" : result[3]}
+            json_data[result[0]] = {"card_number" : result[0], "name" : result[1], "elixir_cost" : result[2], "rarity" : result[3]}
         return jsonify(json_data)
     def list_decks(self):
         self.createConnection()
         self.cur.execute("SELECT d.*, c.* FROM decks as d \
-                            JOIN deck_cartas as dc ON dc.codigo_deck = d.codigo_deck \
-                            JOIN cartas as c ON c.numero_carta = dc.numero_carta")
+                            JOIN deck_cards as dc ON dc.deck_code = d.deck_code \
+                            JOIN cards as c ON c.card_number = dc.card_number")
         res = self.cur.fetchall()
         decks = {}
         for i in res:
-            # 0 -> codigo_deck
-            # 1 -> descricao_deck
-            # 2 -> nome_deck
-            # 3 -> custo_deck
-            # 4 -> data_criacao_deck
-            # 5 -> carta_index
-            # 6 -> carta_nome
-            # 7 -> carta_raridade
-            # 8 -> carta_custo
-            carta = {
-                "numero_carta": i[5],
-                "carta_nome": i[6],
-                "carta_raridade": i[7],
-                "carta_custo": float(i[8])
+            # 0 -> deck_code
+            # 1 -> description_deck
+            # 2 -> name_deck
+            # 3 -> elixir_cost_deck
+            # 4 -> created_at_deck
+            # 5 -> card_index
+            # 6 -> card_name
+            # 7 -> card_rarity
+            # 8 -> card_elixir_cost
+            card = {
+                "card_number": i[5],
+                "card_name": i[6],
+                "card_rarity": i[7],
+                "card_elixir_cost": float(i[8])
             }
             if (f"Deck{i[0]}" in decks.keys()):
-                temp = decks[f"Deck{i[0]}"]["cartas"]
-                temp.append(carta)
-                decks[f"Deck{i[0]}"]["cartas"] = temp
+                temp = decks[f"Deck{i[0]}"]["cards"]
+                temp.append(card)
+                decks[f"Deck{i[0]}"]["cards"] = temp
             else:
                 deck = {
-                    "codigo_deck": i[0],
+                    "deck_code": i[0],
                     "descrico": i[1],
-                    "nome": i[2],
-                    "custo": float(i[3]),
-                    "data_criacao": f"{i[4].day}/{i[4].month}/{i[4].year}",
-                    "cartas": [carta]
+                    "name": i[2],
+                    "elixir_cost": float(i[3]),
+                    "created_at": f"{i[4].day}/{i[4].month}/{i[4].year}",
+                    "cards": [card]
                 }
                 decks[f"Deck{i[0]}"] = deck
         response = {"decks": list(decks.values())}
@@ -96,44 +96,44 @@ class Database:
         self.createConnection()
         if criterio.isnumeric():
             query = "SELECT d.* , c.* FROM decks as d \
-                JOIN deck_cartas as dc ON dc.codigo_deck = d.codigo_deck \
-                    JOIN cartas as c ON c.numero_carta = dc.numero_carta \
-                    WHERE dc.codigo_deck = %s"
+                JOIN deck_cards as dc ON dc.deck_code = d.deck_code \
+                    JOIN cards as c ON c.card_number = dc.card_number \
+                    WHERE dc.deck_code = %s"
         if bool(re.match("\d\d\d\d-\d\d-\d\d", '-'.join(criterio.split('/')[::-1]))):
             criterio = '-'.join(criterio.split('/')[::-1])
             query = "SELECT d.* , c.* FROM decks as d \
-                JOIN deck_cartas as dc ON dc.codigo_deck = d.codigo_deck \
-                    JOIN cartas as c ON c.numero_carta = dc.numero_carta \
-                    WHERE d.data_criacao = %s"
+                JOIN deck_cards as dc ON dc.deck_code = d.deck_code \
+                    JOIN cards as c ON c.card_number = dc.card_number \
+                    WHERE d.created_at = %s"
         else:
             query = "SELECT d.*, c.* FROM decks as d \
-                JOIN deck_cartas as dc ON dc.codigo_deck = d.codigo_deck \
-                JOIN cartas as c ON c.numero_carta = dc.numero_carta \
-                WHERE d.nome = %s"
+                JOIN deck_cards as dc ON dc.deck_code = d.deck_code \
+                JOIN cards as c ON c.card_number = dc.card_number \
+                WHERE d.name = %s"
         self.cur.execute(query,(criterio,))
         res = self.cur.fetchall()
         self.con.commit()
         decks = {}
         for i in res:
             print(i)
-            carta = {
-                "numero_carta": i[5],
-                "carta_nome": i[6],
-                "carta_raridade": i[7],
-                "carta_custo": float(i[8])
+            card = {
+                "card_number": i[5],
+                "card_name": i[6],
+                "card_rarity": i[7],
+                "card_elixir_cost": float(i[8])
             }
             if (f"Deck{i[0]}" in decks.keys()):
-                temp = decks[f"Deck{i[0]}"]["cartas"]
-                temp.append(carta)
-                decks[f"Deck{i[0]}"]["cartas"] = temp
+                temp = decks[f"Deck{i[0]}"]["cards"]
+                temp.append(card)
+                decks[f"Deck{i[0]}"]["cards"] = temp
             else:
                 deck = {
-                    "codigo_deck": i[0],
-                    "descricao": i[1],
-                    "nome": i[2],
-                    "custo": float(i[3]),
-                    "data_criacao": f"{i[4].day}/{i[4].month}/{i[4].year}",
-                    "cartas": [carta]
+                    "deck_code": i[0],
+                    "description": i[1],
+                    "name": i[2],
+                    "elixir_cost": float(i[3]),
+                    "created_at": f"{i[4].day}/{i[4].month}/{i[4].year}",
+                    "cards": [card]
                 }
                 decks[f"Deck{i[0]}"] = deck
         response = {"decks": list(decks.values())}

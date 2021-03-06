@@ -19,16 +19,16 @@ CREATE SCHEMA IF NOT EXISTS `CLASHROYALE` DEFAULT CHARACTER SET latin1 ;
 USE `CLASHROYALE` ;
 
 -- -----------------------------------------------------
--- Table `CLASHROYALE`.`cartas`
+-- Table `CLASHROYALE`.`cards`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `CLASHROYALE`.`cartas` ;
+DROP TABLE IF EXISTS `CLASHROYALE`.`cards` ;
 
-CREATE TABLE IF NOT EXISTS `CLASHROYALE`.`cartas` (
-  `numero_carta` INT(11) NOT NULL AUTO_INCREMENT,
-  `nome` VARCHAR(50) NOT NULL,
-  `raridade` VARCHAR(50) NOT NULL,
-  `custo` INT(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`numero_carta`))
+CREATE TABLE IF NOT EXISTS `CLASHROYALE`.`cards` (
+  `card_number` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(50) NOT NULL,
+  `rarity` VARCHAR(50) NOT NULL,
+  `elixir_cost` INT(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`card_number`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
@@ -39,33 +39,33 @@ DEFAULT CHARACTER SET = latin1;
 DROP TABLE IF EXISTS `CLASHROYALE`.`decks` ;
 
 CREATE TABLE IF NOT EXISTS `CLASHROYALE`.`decks` (
-  `codigo_deck` INT(11) NOT NULL AUTO_INCREMENT,
-  `descricao` VARCHAR(200) NULL DEFAULT NULL,
-  `nome` VARCHAR(50) NOT NULL,
-  `custo` DECIMAL(2,1) NULL DEFAULT NULL,
-  `data_criacao` DATE NULL DEFAULT NULL,
-  PRIMARY KEY (`codigo_deck`))
+  `deck_code` INT(11) NOT NULL AUTO_INCREMENT,
+  `description` VARCHAR(200) NULL DEFAULT NULL,
+  `name` VARCHAR(50) NOT NULL,
+  `elixir_cost` DECIMAL(2,1) NULL DEFAULT NULL,
+  `created_at` DATE NULL DEFAULT NULL,
+  PRIMARY KEY (`deck_code`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
--- Table `CLASHROYALE`.`deck_cartas`
+-- Table `CLASHROYALE`.`deck_cards`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `CLASHROYALE`.`deck_cartas` ;
+DROP TABLE IF EXISTS `CLASHROYALE`.`deck_cards` ;
 
-CREATE TABLE IF NOT EXISTS `CLASHROYALE`.`deck_cartas` (
-  `codigo_deck` INT(11) NOT NULL,
-  `numero_carta` INT(11) NOT NULL,
-  `index_carta` INT(11) NOT NULL,
-  PRIMARY KEY (`codigo_deck`, `index_carta`),
-  INDEX `numero_carta` (`numero_carta` ASC),
-  CONSTRAINT `DECK_cartas_ibfk_1`
-    FOREIGN KEY (`codigo_deck`)
-    REFERENCES `CLASHROYALE`.`decks` (`codigo_deck`),
-  CONSTRAINT `DECK_cartas_ibfk_2`
-    FOREIGN KEY (`numero_carta`)
-    REFERENCES `CLASHROYALE`.`cartas` (`numero_carta`))
+CREATE TABLE IF NOT EXISTS `CLASHROYALE`.`deck_cards` (
+  `deck_code` INT(11) NOT NULL,
+  `card_number` INT(11) NOT NULL,
+  `index_card` INT(11) NOT NULL,
+  PRIMARY KEY (`deck_code`, `index_card`),
+  INDEX `card_number` (`card_number` ASC),
+  CONSTRAINT `DECK_cards_ibfk_1`
+    FOREIGN KEY (`deck_code`)
+    REFERENCES `CLASHROYALE`.`decks` (`deck_code`),
+  CONSTRAINT `DECK_cards_ibfk_2`
+    FOREIGN KEY (`card_number`)
+    REFERENCES `CLASHROYALE`.`cards` (`card_number`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 

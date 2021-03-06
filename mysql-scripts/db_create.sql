@@ -1,28 +1,28 @@
 CREATE DATABASE CLASHROYALE;
 USE `CLASHROYALE` ;
 
-CREATE TABLE cartas (
-  numero_carta INT(11) AUTO_INCREMENT,
-  nome VARCHAR(50) NOT NULL,
-  raridade VARCHAR(10) NOT NULL,
-  custo INT(11) NOT NULL,
-  PRIMARY KEY (numero_carta)
+CREATE TABLE cards (
+  card_number INT(11) AUTO_INCREMENT,
+  name VARCHAR(50) NOT NULL,
+  rarity VARCHAR(10) NOT NULL,
+  elixir_cost INT(11) NOT NULL,
+  PRIMARY KEY (card_number)
 );
 
 CREATE TABLE decks (
-  codigo_deck INT(11) AUTO_INCREMENT,
-  descricao VARCHAR(200) NULL DEFAULT NULL,
-  nome VARCHAR(50) NOT NULL,
-  custo DECIMAL(2,1)NOT NULL,
-  data_criacao DATE NOT NULL,
-  PRIMARY KEY (codigo_deck)
+  deck_code INT(11) AUTO_INCREMENT,
+  description VARCHAR(200) NULL DEFAULT NULL,
+  name VARCHAR(50) NOT NULL,
+  elixir_cost DECIMAL(2,1)NOT NULL,
+  created_at DATE NOT NULL,
+  PRIMARY KEY (deck_code)
 );
 
-CREATE TABLE deck_cartas (
-  codigo_deck INT(11) NOT NULL,
-  numero_carta INT(11) NOT NULL,
-  index_carta SMALLINT NOT NULL,
-  PRIMARY KEY (codigo_deck, index_carta),
-  FOREIGN KEY (codigo_deck) REFERENCES decks (codigo_deck),
-  FOREIGN KEY (numero_carta) REFERENCES cartas (numero_carta)
+CREATE TABLE deck_cards (
+  deck_code INT(11) NOT NULL,
+  card_number INT(11) NOT NULL,
+  index_card SMALLINT NOT NULL,
+  PRIMARY KEY (deck_code, index_card),
+  FOREIGN KEY (deck_code) REFERENCES decks (deck_code),
+  FOREIGN KEY (card_number) REFERENCES cards (card_number)
 );

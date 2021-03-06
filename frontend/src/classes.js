@@ -20,7 +20,7 @@ export default makeStyles(theme => ({
   h100: {
     height: '100%',
   },
-  carta: {
+  card: {
     height: 110  
   },
   zone: {
