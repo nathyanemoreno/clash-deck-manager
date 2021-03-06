@@ -13,8 +13,7 @@
 ## Information
 The project is a manager for Clash Royale decks. The user can fully CRUD their decks and also see the total _exilir_ cost of each deck. This project includes all 96 cards from the game. All cards images were obtained from the [Oficial Clash Royale Wiki](https://clashroyale.fandom.com/wiki/Clash_Royale_Wiki).
 
-This project was created for learning both Flask and mainly MySQL. As a first try, the code may be no optimized and a bit ugly, we become better with our mistakes! This project was created at December of 2019, any new update to the game will not be included in this project. Feel free to use this project as you want.
-
+This project was created for learning both Flask and mainly MySQL. As a first try, the code may be no optimized and a bit ugly, we become better with our mistakes! This project was created at December of 2019, any new update to the game will not be included in this project, but it might be updated (See [Updates.md](./Updates.md)). Feel free to use this project as you want.
 
 ## Full Local Development
 How to run locally:
@@ -28,6 +27,15 @@ Install MySQL:
 Start MySQL Server:
 - **Linux**: Run `systemctl start mysql.service`
 - **Windows**: Run `"C:\Program Files\MySQL\MySQL Server 5.6\bin\mysqld"`
+
+Create a user:
+- For connect to the database, it is need a `host`, `user`, `password` and a `database`. Those values must be provided in `database.py` on the `Database` class on `createConnection` method. The application has some values by default, so you can just:
+  - Create a database called `CLASHROYALE`:
+    - **SQL**: `CREATE DATABASE CLASHROYALE;`
+  - Create a user called `newuser` with password `user_password`:
+    - **SQL**: `CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'user_password';`
+  - Grant all privileges for `newuser`:
+    - **SQL**: `GRANT ALL PRIVILEGES ON CLASHROYALE.* TO 'newuser'@'localhost';`
 
 Populate the database:
 - Execute the SQL queries inside `mysql-scripts` folder in the following order:

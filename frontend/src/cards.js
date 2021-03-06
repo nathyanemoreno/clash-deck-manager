@@ -94,9 +94,8 @@ export default [
   { name: 'Zap', elixir_cost: 2 },
   
   { name: 'Clone', elixir_cost: 3 },
-  { name: 'Cura', elixir_cost: 1 },
   { name: 'Heal', elixir_cost: 1 },
   { name: 'Mirror', elixir_cost: 3 },
   { name: 'Rage', elixir_cost: 2 },
   { name: 'Graveyard', elixir_cost: 5 }
-].map(e => ({ ...e, img: require(`./media/cards/${e.name}.png`) }))
+].map(e => ({ ...e, img: require(`./media/cards/${e.name}.png`).default }))

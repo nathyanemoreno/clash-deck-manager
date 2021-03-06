@@ -1,6 +1,6 @@
 USE CLASHROYALE;
 
-INSERT INTO cards('name', 'elixir_cost', 'rarity') VALUES
+INSERT INTO cards(name, elixir_cost, rarity) VALUES
 ('Archers', 3, 'Common'),
 ('Baby Dragon', 4, 'Epic'),
 ('Balloon', 5, 'Epic'),
@@ -15,7 +15,7 @@ INSERT INTO cards('name', 'elixir_cost', 'rarity') VALUES
 ('Dart Goblin', 3, 'Rare'),
 ('Electro Dragon', 5, 'Epic'),
 ('Electro Wizard', 4, 'Legendary'),
-('Elite Barbarians', 6, 'Common')
+('Elite Barbarians', 6, 'Common'),
 ('Elixir Golem', 3, 'Rare'),
 ('Executioner', 5, 'Epic'),
 ('Fire Spirits', 2, 'Common'),
@@ -58,7 +58,7 @@ INSERT INTO cards('name', 'elixir_cost', 'rarity') VALUES
 ('Skeletons', 1, 'Common'),
 ('Skeleton Army', 3, 'Epic'),
 ('Skeleton Barrel', 3, 'Common'),
-('Sparky', 6 'Legendary'),
+('Sparky', 6, 'Legendary'),
 ('Spear Goblins', 2, 'Common'),
 ('Three Musketeers', 9, 'Rare'),
 ('Valkyrie', 4, 'Rare'),
@@ -66,21 +66,18 @@ INSERT INTO cards('name', 'elixir_cost', 'rarity') VALUES
 ('Witch', 5, 'Epic'),
 ('Wizard', 5, 'Rare'),
 ('Zappies', 4, 'Rare'),
-
 ('Bomb Tower', 4, 'Rare'),
 ('Cannon', 3, 'Common'),
 ('Inferno Tower', 5, 'Rare'),
 ('Mortar', 4, 'Common'),
 ('Tesla', 4, 'Common'),
 ('X-Bow', 6, 'Epic'),
-
 ('Barbarian Hut', 7, 'Rare'),
 ('Elixir Collector', 6, 'Rare'),
 ('Furnace', 4, 'Rare'),
 ('Goblin Hut', 3, 'Epic'),
 ('Goblin Cage', 4, 'Rare'),
 ('Tombstone', 3, 'Rare'),
-
 ('Arrows', 3, 'Common'),
 ('Barbarian Barrel', 2, 'Epic'),
 ('Goblin Barrel', 3, 'Epic'),
@@ -94,9 +91,7 @@ INSERT INTO cards('name', 'elixir_cost', 'rarity') VALUES
 ('The Log', 2, 'Legendary'),
 ('Tornado', 3, 'Epic'),
 ('Zap', 2, 'Common'),
-
 ('Clone', 3, 'Epic'),
-('Cura', 1, 'Rare'),
 ('Heal', 1, 'Rare'),
 ('Mirror', 3, 'Epic'),
 ('Rage', 2, 'Epic'),

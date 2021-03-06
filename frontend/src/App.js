@@ -9,11 +9,10 @@ import useStyle from './classes';
 import './App.css';
 import api from './services/api';
 
-const Elixir = require('./media/Elixir.png')
+const Elixir = require('./media/Elixir.png').default;
 
 const cls = (...item) => item.join(' ')
 const parseText = (text) => text.toLowerCase().split('-').join(' ').split('.').join(' ')
-const makeImgName = (name) => parseText(name).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/(?:^|\s)\S/g, e => e.toUpperCase()).split(' ').join('');
 
 function App() {
   const classes = useStyle();
@@ -39,11 +38,11 @@ function App() {
     const last = queryText;
     if (queryText === '') {
       api.get(`/list_decks`).then(res => {
-        setDecks(res.data.decks.map((e, i)  => ({...e, index: i, cards: e.cards.map(c => ({...c, img: require(`./media/cards/${makeImgName(c.card_name)}Card.png`)}))})));
+        setDecks(res.data.decks.map((e, i)  => ({...e, index: i, cards: e.cards.map(c => ({...c, img: require(`./media/cards/${c.card_name}.png`).default}))})));
       })
     } else {
       api.get(`/find_deck?query=${queryText}`).then(res => {
-        setDecks(res.data.decks.map((e, i)  => ({...e, index: i, cards: e.cards.map(c => ({...c, img: require(`./media/cards/${makeImgName(c.card_name)}Card.png`)}))})));
+        setDecks(res.data.decks.map((e, i)  => ({...e, index: i, cards: e.cards.map(c => ({...c, img: require(`./media/cards/${c.card_name}.png`).default}))})));
       })
     }
     setLastQueryText(last);
@@ -101,7 +100,7 @@ function App() {
                 <Grid item md={3}>
                   <img
                       className={classes.card}
-                      src={require(`./media/cards/${makeImgName(card.card_name)}Card.png`)}
+                      src={require(`./media/cards/${card.card_name}.png`).default}
                       title={card.card_name}
                       alt={card.card_name}
                     />
@@ -150,11 +149,11 @@ function App() {
     const data = new Date().toISOString().substring(0, 10);
     api.post(`/add_deck?description=${currentDeck.description}&name=${currentDeck.name}&elixir_cost=${elixir_cost}&created_at=${data}&cards=${JSON.stringify(cards.map(v => ({card_number: v.card_number, index_card: v.index})))}`)
     .then(v => {
-      alert('Deck salvo com Sucesso!')
+      alert('Deck saved with success!')
     })
     .catch(error => {
       console.error(error);
-      alert('Não foi possível salvar o Deck!')
+      alert('Could not save the deck!')
     })
   }
 
@@ -164,11 +163,11 @@ function App() {
     const elixir_cost = Math.round(10 * cards.map(card => card.card_elixir_cost).reduce((a, b) => a + b,0) / cards.length) / 10;
     api.post(`/update_deck?deck_code=${currentDeck.deck_code}&description=${currentDeck.description}&name=${currentDeck.name}&elixir_cost=${elixir_cost}&cards=${JSON.stringify(cards.map(v => ({...v, index_card: v.index})))}`)
     .then(v => {
-      alert('Deck alterado com Sucesso!')
+      alert('Deck updated with success!')
     })
     .catch(error => {
       console.error(error);
-      alert('Não foi possível alterar o Deck!')
+      alert('Could not updated the deck!')
     })
   }
 
@@ -177,11 +176,11 @@ function App() {
     api.post(`/remove_deck?deck_code=${codigo}`)
     .then(v => {
       startSearch();
-      alert('Deck deletado com Sucesso');
+      alert('Deck deleted with success');
     })
     .catch(error => {
       console.error(error);
-      alert('Não foi possível deletado o Deck')
+      alert('Could not delete the deck')
     })
   }
 
@@ -189,11 +188,11 @@ function App() {
     api.get('/list_cards').then(res => {
       const data = res.data;
       console.log(data);
-      setCartas(Object.values(data).map(e => ({...e, card_elixir_cost: e.elixir_cost, img: require(`./media/cards/${makeImgName(e.name)}Card.png`)})));
+      setCartas(Object.values(data).map(e => ({...e, card_elixir_cost: e.elixir_cost, img: require(`./media/cards/${e.name}.png`).default})));
     })
     .catch(error => {
       console.error(error);
-      alert('Não foi possível obter as cards.')
+      alert('Could not obtain the decks')
     });
   }, []);
 
@@ -203,8 +202,8 @@ function App() {
         <Grid item lg={6} className={cls(classes.grid, classes.h100)}>
           <Paper className={classes.paper} style={{height: 'calc(100% - 32px)'}}>
             <Typography style={{marginBottom: '16px'}} variant="h4"><strong>Clash Royale Deck Manager</strong></Typography>
-            <TextField style={{marginBottom: '16px'}} label="Nome do Deck" variant="outlined" fullWidth inputProps={{ maxLength: 50 }} onChange={handleChange('name')} value={currentDeck.name ? currentDeck.name : ''}/>
-            <TextField label="Descrição" variant="outlined" fullWidth inputProps={{ maxLength: 200 }} multiline rowsMax={3} onChange={handleChange('description')} value={currentDeck.description ? currentDeck.description : ''}/>
+            <TextField style={{marginBottom: '16px'}} label="Deck Name" variant="outlined" fullWidth inputProps={{ maxLength: 50 }} onChange={handleChange('name')} value={currentDeck.name ? currentDeck.name : ''}/>
+            <TextField label="Description" variant="outlined" fullWidth inputProps={{ maxLength: 200 }} multiline rowsMax={3} onChange={handleChange('description')} value={currentDeck.description ? currentDeck.description : ''}/>
             <center>  
               <Grid container spacing={2} style={{width: '90%', margin: '20px 0'}}>
                 {currentDeck.cards.map((e, i) => (
@@ -224,9 +223,9 @@ function App() {
               </Grid>
             </center>
             <div style={{float: 'right'}}>
-              {isEditing && <Button variant='outlined' color='primary' onClick={updateDeck}>Atualizar</Button>}
+              {isEditing && <Button variant='outlined' color='primary' onClick={updateDeck}>Update</Button>}
               {' '}
-              <Button variant='contained' color='primary' onClick={saveDeck}>Salvar novo</Button>
+              <Button variant='contained' color='primary' onClick={saveDeck}>Save new</Button>
             </div>
           </Paper>
         </Grid>
@@ -237,10 +236,10 @@ function App() {
                 <SearchIcon />
               </Grid>
               <Grid item className={classes.wFill}>
-                <Input placeholder="Pesquisar" fullWidth onChange={handleSearchChange}/>
+                <Input placeholder="Search" fullWidth onChange={handleSearchChange}/>
               </Grid>
               <Grid item>
-                <Button variant='contained' color='primary' onClick={startSearch}>Pesquisar</Button>
+                <Button variant='contained' color='primary' onClick={startSearch}>Search</Button>
               </Grid>
             </Grid>
           </Paper>
@@ -262,8 +261,8 @@ function App() {
       >
         <div className={classes.paper_modal}>
           <div>
-            <Typography className={classes.modalTitle} variant='h5'>Escolha uma card</Typography>
-            <Button variant='contained' color='secondary' className={classes.modalCancelBtn} onClick={() => setOpen(false)}>Cancelar</Button>
+            <Typography className={classes.modalTitle} variant='h5'>Select one card</Typography>
+            <Button variant='contained' color='secondary' className={classes.modalCancelBtn} onClick={() => setOpen(false)}>Cancel</Button>
           </div>
           <Grid container spacing={1}>
             {cards.map((e, i) => (
@@ -279,7 +278,7 @@ function App() {
                       onClick={handleCardSelect(e)}
                     />
                     <img src={Elixir} alt='Elixir' className={classes.elixirBadge} />
-                    <p className={classes.elixirCusto}>{e.card_elixir_cost}</p>
+                    <p className={classes.elixirCost}>{e.card_elixir_cost}</p>
                   </div>
                 </Grid>
               ) : null

@@ -9,9 +9,10 @@ class Database:
         pass
     def createConnection(self):
         host = "localhost"
-        user = "root"
-        password = "hogwarts"
+        user = "newuser"
+        password = "password"
         db = "CLASHROYALE"
+
         self.con = mysql.connector.connect(host=host, user=user, password=password, db=db)
         self.cur = self.con.cursor()
     def add_deck(self, name, description, elixir_cost, cards):

@@ -21,7 +21,7 @@ export default makeStyles(theme => ({
     height: '100%',
   },
   card: {
-    height: 110  
+    // height: 110  
   },
   zone: {
     background: 'rgba(0, 0, 0, 0.4)',
@@ -84,7 +84,7 @@ export default makeStyles(theme => ({
     right: -5,
     top: -5
   },
-  elixirCusto: {
+  elixirCost: {
     position: 'absolute',
     right: 5,
     top: -15,
