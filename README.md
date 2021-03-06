@@ -6,7 +6,7 @@
 ![](https://img.shields.io/badge/MySQL-v5.7.33-blue?logo=mysql)
 
 ## Technologies
-![](https://img.shields.io/badge/React-v16.12.0-blue?logo=react)
+![](https://img.shields.io/badge/React-v16.14.0-blue?logo=react)
 ![](https://img.shields.io/badge/Flask-v1.1.2-blue?logo=flask)
 ![](https://img.shields.io/badge/Material_UI-v4.8.0-blue?logo=material-ui)
 
