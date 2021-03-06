@@ -94,7 +94,7 @@ Start the app:
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/alexaragao">
+      <a href="https://github.com/nathyanemoreno">
         <img src="https://avatars.githubusercontent.com/u/40841909?s=100" width="100px;" alt="Nathyane Moreno"/>
         <br />
         <b>Nathyane Moreno</b>
